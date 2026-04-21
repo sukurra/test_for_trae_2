@@ -42,6 +42,155 @@
         .toolbar-buttons {
             display: flex;
             gap: 10px;
+            align-items: center;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            width: 300px;
+            display: none;
+        }
+
+        .settings-panel.show {
+            display: block;
+        }
+
+        .settings-panel h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section h4 {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .style-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .style-preset-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .style-preset-btn:hover {
+            border-color: #3498db;
+        }
+
+        .style-preset-btn.active {
+            border-color: #3498db;
+            background-color: #e8f4fc;
+        }
+
+        .style-preset-btn .preview {
+            width: 100%;
+            height: 30px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .layout-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .layout-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .layout-option:hover {
+            border-color: #3498db;
+        }
+
+        .layout-option.active {
+            border-color: #3498db;
+            background-color: #e8f4fc;
+        }
+
+        .layout-option input {
+            margin: 0;
+        }
+
+        .layout-option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .color-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .color-picker-row label {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .color-picker-row input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .close-settings {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-settings:hover {
+            color: #333;
+        }
+
+        .node-vertical {
+            margin-bottom: 60px;
+        }
+
+        .node-radial {
+            position: absolute;
         }
 
         .btn {
@@ -78,6 +227,15 @@
 
         .btn-danger:hover {
             background-color: #c0392b;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #d68910;
         }
 
         .canvas-container {
@@ -257,6 +415,7 @@
             <h1>思维导图</h1>
             <div class="toolbar-buttons">
                 <button class="btn btn-primary" id="addRootBtn">添加中心主题</button>
+                <button class="btn btn-warning" id="settingsBtn">样式设置</button>
                 <button class="btn btn-danger" id="clearBtn">清空画布</button>
                 <button class="btn btn-success" id="exportBtn">导出为JSON</button>
             </div>
@@ -266,6 +425,71 @@
                 <svg class="connections" id="connections"></svg>
             </div>
         </div>
+        <div class="settings-panel" id="settingsPanel">
+            <button class="close-settings" id="closeSettings">×</button>
+            <h3>样式与布局设置</h3>
+            
+            <div class="settings-section">
+                <h4>样式预设</h4>
+                <div class="style-presets">
+                    <div class="style-preset-btn active" data-style="classic">
+                        <div class="preview" style="background: linear-gradient(135deg, #3498db, #2980b9);"></div>
+                        <span>经典蓝</span>
+                    </div>
+                    <div class="style-preset-btn" data-style="minimal">
+                        <div class="preview" style="background: linear-gradient(135deg, #95a5a6, #7f8c8d);"></div>
+                        <span>简约灰</span>
+                    </div>
+                    <div class="style-preset-btn" data-style="rainbow">
+                        <div class="preview" style="background: linear-gradient(135deg, #e74c3c, #f39c12, #27ae60, #3498db);"></div>
+                        <span>彩虹色</span>
+                    </div>
+                    <div class="style-preset-btn" data-style="dark">
+                        <div class="preview" style="background: linear-gradient(135deg, #2c3e50, #1a252f);"></div>
+                        <span>深色模式</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4>布局模式</h4>
+                <div class="layout-options">
+                    <div class="layout-option active" data-layout="horizontal">
+                        <input type="radio" id="layoutHorizontal" name="layout" value="horizontal" checked>
+                        <label for="layoutHorizontal">左右分布（子节点在右侧，按Y轴错开）</label>
+                    </div>
+                    <div class="layout-option" data-layout="vertical">
+                        <input type="radio" id="layoutVertical" name="layout" value="vertical">
+                        <label for="layoutVertical">上下分布（子节点在下方，按X轴排列）</label>
+                    </div>
+                    <div class="layout-option" data-layout="radial">
+                        <input type="radio" id="layoutRadial" name="layout" value="radial">
+                        <label for="layoutRadial">放射状分布（围绕父节点均匀分布）</label>
+                    </div>
+                    <div class="layout-option" data-layout="auto">
+                        <input type="radio" id="layoutAuto" name="layout" value="auto">
+                        <label for="layoutAuto">自动分布（根据子节点数量智能排列）</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4>自定义颜色</h4>
+                <div class="color-picker-row">
+                    <label for="rootBgColor">根节点背景色</label>
+                    <input type="color" id="rootBgColor" value="#3498db">
+                </div>
+                <div class="color-picker-row">
+                    <label for="nodeBorderColor">节点边框色</label>
+                    <input type="color" id="nodeBorderColor" value="#3498db">
+                </div>
+                <div class="color-picker-row">
+                    <label for="connectionColor">连接线颜色</label>
+                    <input type="color" id="connectionColor" value="#3498db">
+                </div>
+            </div>
+        </div>
+
         <div class="instructions">
             <h3>使用说明</h3>
             <ul>
@@ -274,11 +498,308 @@
                 <li>拖拽节点移动位置</li>
                 <li>点击绿色+号添加子节点</li>
                 <li>点击红色×号删除节点</li>
+                <li>点击"样式设置"自定义外观和布局</li>
             </ul>
         </div>
     </div>
 
     <script>
+        class StyleManager {
+            constructor() {
+                this.stylePresets = {
+                    classic: {
+                        name: '经典蓝',
+                        rootBgColor: '#3498db',
+                        rootTextColor: '#ffffff',
+                        rootBorderColor: '#2980b9',
+                        nodeBgColor: '#ffffff',
+                        nodeTextColor: '#333333',
+                        nodeBorderColor: '#3498db',
+                        selectedBorderColor: '#e74c3c',
+                        connectionColor: '#3498db',
+                        addChildBtnColor: '#27ae60',
+                        deleteBtnColor: '#e74c3c',
+                        nodeShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                        selectedShadow: '0 4px 20px rgba(231, 76, 60, 0.3)'
+                    },
+                    minimal: {
+                        name: '简约灰',
+                        rootBgColor: '#95a5a6',
+                        rootTextColor: '#ffffff',
+                        rootBorderColor: '#7f8c8d',
+                        nodeBgColor: '#ffffff',
+                        nodeTextColor: '#333333',
+                        nodeBorderColor: '#bdc3c7',
+                        selectedBorderColor: '#34495e',
+                        connectionColor: '#95a5a6',
+                        addChildBtnColor: '#27ae60',
+                        deleteBtnColor: '#e74c3c',
+                        nodeShadow: '0 1px 5px rgba(0, 0, 0, 0.05)',
+                        selectedShadow: '0 2px 10px rgba(52, 73, 94, 0.2)'
+                    },
+                    rainbow: {
+                        name: '彩虹色',
+                        rootBgColor: '#e74c3c',
+                        rootTextColor: '#ffffff',
+                        rootBorderColor: '#c0392b',
+                        nodeBgColor: '#ffffff',
+                        nodeTextColor: '#333333',
+                        nodeBorderColor: '#f39c12',
+                        selectedBorderColor: '#9b59b6',
+                        connectionColor: '#3498db',
+                        addChildBtnColor: '#27ae60',
+                        deleteBtnColor: '#e74c3c',
+                        nodeShadow: '0 2px 10px rgba(243, 156, 18, 0.2)',
+                        selectedShadow: '0 4px 20px rgba(155, 89, 182, 0.3)',
+                        useChildColorCycle: true
+                    },
+                    dark: {
+                        name: '深色模式',
+                        rootBgColor: '#2c3e50',
+                        rootTextColor: '#ffffff',
+                        rootBorderColor: '#1a252f',
+                        nodeBgColor: '#34495e',
+                        nodeTextColor: '#ecf0f1',
+                        nodeBorderColor: '#3498db',
+                        selectedBorderColor: '#f39c12',
+                        connectionColor: '#3498db',
+                        addChildBtnColor: '#27ae60',
+                        deleteBtnColor: '#e74c3c',
+                        nodeShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+                        selectedShadow: '0 4px 20px rgba(243, 156, 18, 0.4)'
+                    }
+                };
+
+                this.rainbowColors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#1abc9c', '#e91e63', '#00bcd4'];
+                
+                this.currentStyle = this.loadStyleFromStorage() || 'classic';
+                this.currentLayout = this.loadLayoutFromStorage() || 'horizontal';
+                this.customColors = this.loadCustomColorsFromStorage() || null;
+            }
+
+            getCurrentStyle() {
+                let style = { ...this.stylePresets[this.currentStyle] };
+                if (this.customColors) {
+                    style = { ...style, ...this.customColors };
+                }
+                return style;
+            }
+
+            getChildNodeColor(index) {
+                const style = this.getCurrentStyle();
+                if (style.useChildColorCycle) {
+                    return this.rainbowColors[index % this.rainbowColors.length];
+                }
+                return style.nodeBorderColor;
+            }
+
+            setStyle(styleName) {
+                this.currentStyle = styleName;
+                this.customColors = null;
+                this.saveStyleToStorage();
+                this.updateColorPickers();
+            }
+
+            setLayout(layoutName) {
+                this.currentLayout = layoutName;
+                this.saveLayoutToStorage();
+            }
+
+            setCustomColor(key, value) {
+                if (!this.customColors) {
+                    this.customColors = {};
+                }
+                this.customColors[key] = value;
+                this.saveCustomColorsToStorage();
+            }
+
+            loadStyleFromStorage() {
+                try {
+                    return localStorage.getItem('mindmap_style');
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            saveStyleToStorage() {
+                try {
+                    localStorage.setItem('mindmap_style', this.currentStyle);
+                } catch (e) {}
+            }
+
+            loadLayoutFromStorage() {
+                try {
+                    return localStorage.getItem('mindmap_layout');
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            saveLayoutToStorage() {
+                try {
+                    localStorage.setItem('mindmap_layout', this.currentLayout);
+                } catch (e) {}
+            }
+
+            loadCustomColorsFromStorage() {
+                try {
+                    const saved = localStorage.getItem('mindmap_custom_colors');
+                    return saved ? JSON.parse(saved) : null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            saveCustomColorsToStorage() {
+                try {
+                    if (this.customColors) {
+                        localStorage.setItem('mindmap_custom_colors', JSON.stringify(this.customColors));
+                    } else {
+                        localStorage.removeItem('mindmap_custom_colors');
+                    }
+                } catch (e) {}
+            }
+
+            updateColorPickers() {
+                const style = this.getCurrentStyle();
+                const rootBgInput = document.getElementById('rootBgColor');
+                const nodeBorderInput = document.getElementById('nodeBorderColor');
+                const connectionInput = document.getElementById('connectionColor');
+                
+                if (rootBgInput) rootBgInput.value = style.rootBgColor;
+                if (nodeBorderInput) nodeBorderInput.value = style.nodeBorderColor;
+                if (connectionInput) connectionInput.value = style.connectionColor;
+            }
+        }
+
+        class LayoutCalculator {
+            constructor() {
+                this.nodeSpacing = {
+                    horizontal: { x: 220, y: 70 },
+                    vertical: { x: 180, y: 80 },
+                    radial: { radius: 220 }
+                };
+            }
+
+            calculateChildPosition(parentNode, childIndex, totalChildren, layoutMode) {
+                const parentX = parentNode.x;
+                const parentY = parentNode.y;
+
+                switch (layoutMode) {
+                    case 'horizontal':
+                        return this.calculateHorizontalLayout(parentX, parentY, childIndex, totalChildren);
+                    
+                    case 'vertical':
+                        return this.calculateVerticalLayout(parentX, parentY, childIndex, totalChildren);
+                    
+                    case 'radial':
+                        return this.calculateRadialLayout(parentX, parentY, childIndex, totalChildren);
+                    
+                    case 'auto':
+                        return this.calculateAutoLayout(parentX, parentY, childIndex, totalChildren);
+                    
+                    default:
+                        return this.calculateHorizontalLayout(parentX, parentY, childIndex, totalChildren);
+                }
+            }
+
+            calculateHorizontalLayout(parentX, parentY, childIndex, totalChildren) {
+                const spacingX = this.nodeSpacing.horizontal.x;
+                const spacingY = this.nodeSpacing.horizontal.y;
+                
+                const startOffset = ((totalChildren - 1) * spacingY) / 2;
+                
+                return {
+                    x: parentX + spacingX,
+                    y: parentY - startOffset + childIndex * spacingY
+                };
+            }
+
+            calculateVerticalLayout(parentX, parentY, childIndex, totalChildren) {
+                const spacingX = this.nodeSpacing.vertical.x;
+                const spacingY = this.nodeSpacing.vertical.y;
+                
+                const startOffset = ((totalChildren - 1) * spacingX) / 2;
+                
+                return {
+                    x: parentX - startOffset + childIndex * spacingX,
+                    y: parentY + spacingY
+                };
+            }
+
+            calculateRadialLayout(parentX, parentY, childIndex, totalChildren) {
+                const radius = this.nodeSpacing.radial.radius;
+                
+                let startAngle, angleStep;
+                if (totalChildren === 1) {
+                    startAngle = -Math.PI / 2;
+                    angleStep = 0;
+                } else if (totalChildren <= 3) {
+                    startAngle = -Math.PI / 3;
+                    angleStep = (2 * Math.PI / 3) / Math.max(1, totalChildren - 1);
+                } else {
+                    startAngle = -Math.PI / 2;
+                    angleStep = (Math.PI * 3 / 2) / Math.max(1, totalChildren - 1);
+                }
+                
+                const angle = startAngle + childIndex * angleStep;
+                
+                return {
+                    x: parentX + radius * Math.cos(angle),
+                    y: parentY + radius * Math.sin(angle)
+                };
+            }
+
+            calculateAutoLayout(parentX, parentY, childIndex, totalChildren) {
+                if (totalChildren <= 3) {
+                    return this.calculateHorizontalLayout(parentX, parentY, childIndex, totalChildren);
+                } else if (totalChildren <= 6) {
+                    return this.calculateRadialLayout(parentX, parentY, childIndex, totalChildren);
+                } else {
+                    return this.calculateRadialLayout(parentX, parentY, childIndex, totalChildren);
+                }
+            }
+
+            recalculateAllPositions(nodes, layoutMode) {
+                const rootNode = nodes.find(n => n.isRoot);
+                if (!rootNode) return;
+
+                const positionMap = new Map();
+                positionMap.set(rootNode.id, { x: rootNode.x, y: rootNode.y });
+
+                const visited = new Set();
+                const queue = [rootNode];
+
+                while (queue.length > 0) {
+                    const parent = queue.shift();
+                    if (visited.has(parent.id)) continue;
+                    visited.add(parent.id);
+
+                    const childNodes = parent.children
+                        .map(childId => nodes.find(n => n.id === childId))
+                        .filter(n => n);
+
+                    const parentPos = positionMap.get(parent.id);
+                    const virtualParent = { x: parentPos.x, y: parentPos.y };
+
+                    childNodes.forEach((childNode, index) => {
+                        const newPos = this.calculateChildPosition(
+                            virtualParent,
+                            index,
+                            childNodes.length,
+                            layoutMode
+                        );
+                        
+                        positionMap.set(childNode.id, newPos);
+                        childNode.x = newPos.x;
+                        childNode.y = newPos.y;
+                        
+                        queue.push(childNode);
+                    });
+                }
+            }
+        }
+
         class MindMap {
             constructor() {
                 this.canvas = document.getElementById('mindmapCanvas');
@@ -291,7 +812,11 @@
                 this.dragOffsetY = 0;
                 this.nodeIdCounter = 1;
                 
+                this.styleManager = new StyleManager();
+                this.layoutCalculator = new LayoutCalculator();
+                
                 this.initEventListeners();
+                this.initSettingsPanel();
             }
 
             initEventListeners() {
@@ -333,6 +858,82 @@
                 });
             }
 
+            initSettingsPanel() {
+                const settingsPanel = document.getElementById('settingsPanel');
+                const settingsBtn = document.getElementById('settingsBtn');
+                const closeSettings = document.getElementById('closeSettings');
+
+                settingsBtn.addEventListener('click', () => {
+                    settingsPanel.classList.toggle('show');
+                    this.styleManager.updateColorPickers();
+                });
+
+                closeSettings.addEventListener('click', () => {
+                    settingsPanel.classList.remove('show');
+                });
+
+                document.querySelectorAll('.style-preset-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.style-preset-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const styleName = btn.dataset.style;
+                        this.styleManager.setStyle(styleName);
+                        this.reapplyStyles();
+                    });
+                });
+
+                document.querySelectorAll('.layout-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
+                        option.classList.add('active');
+                        const layoutMode = option.dataset.layout;
+                        const radio = option.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+                        this.styleManager.setLayout(layoutMode);
+                        
+                        if (this.nodes.length > 0) {
+                            if (confirm('是否重新排列所有节点的位置？')) {
+                                this.relayoutAllNodes();
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('input[name="layout"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const layoutMode = e.target.value;
+                        document.querySelectorAll('.layout-option').forEach(o => {
+                            o.classList.toggle('active', o.dataset.layout === layoutMode);
+                        });
+                        this.styleManager.setLayout(layoutMode);
+                    });
+                });
+
+                document.getElementById('rootBgColor').addEventListener('input', (e) => {
+                    this.styleManager.setCustomColor('rootBgColor', e.target.value);
+                    this.reapplyStyles();
+                });
+
+                document.getElementById('nodeBorderColor').addEventListener('input', (e) => {
+                    this.styleManager.setCustomColor('nodeBorderColor', e.target.value);
+                    this.reapplyStyles();
+                });
+
+                document.getElementById('connectionColor').addEventListener('input', (e) => {
+                    this.styleManager.setCustomColor('connectionColor', e.target.value);
+                    this.updateConnections();
+                });
+
+                const currentStyle = this.styleManager.currentStyle;
+                const currentLayout = this.styleManager.currentLayout;
+
+                document.querySelector(`.style-preset-btn[data-style="${currentStyle}"]`)?.classList.add('active');
+                document.querySelector(`.layout-option[data-layout="${currentLayout}"]`)?.classList.add('active');
+                document.querySelector(`input[value="${currentLayout}"]`).checked = true;
+
+                this.styleManager.updateColorPickers();
+            }
+
             addRootNode() {
                 const existingRoot = this.nodes.find(n => n.isRoot);
                 if (existingRoot) {
@@ -347,7 +948,8 @@
                     y: window.innerHeight / 2 - 20,
                     isRoot: true,
                     parentId: null,
-                    children: []
+                    children: [],
+                    styleIndex: 0
                 };
 
                 this.nodes.push(node);
@@ -356,14 +958,29 @@
             }
 
             addChildNode(parentNode) {
+                const currentChildren = parentNode.children
+                    .map(id => this.nodes.find(n => n.id === id))
+                    .filter(n => n);
+                
+                const newChildIndex = currentChildren.length;
+                const totalChildren = newChildIndex + 1;
+
+                const position = this.layoutCalculator.calculateChildPosition(
+                    parentNode,
+                    newChildIndex,
+                    totalChildren,
+                    this.styleManager.currentLayout
+                );
+
                 const node = {
                     id: this.nodeIdCounter++,
                     text: '子主题',
-                    x: parentNode.x + 200,
-                    y: parentNode.y,
+                    x: position.x,
+                    y: position.y,
                     isRoot: false,
                     parentId: parentNode.id,
-                    children: []
+                    children: [],
+                    styleIndex: newChildIndex
                 };
 
                 this.nodes.push(node);
@@ -411,11 +1028,31 @@
             }
 
             renderNode(nodeData) {
+                const style = this.styleManager.getCurrentStyle();
                 const nodeElement = document.createElement('div');
+                
+                let borderColor;
+                if (nodeData.isRoot) {
+                    borderColor = style.rootBorderColor;
+                } else {
+                    borderColor = this.styleManager.getChildNodeColor(nodeData.styleIndex);
+                }
+
                 nodeElement.className = `node ${nodeData.isRoot ? 'root' : ''}`;
                 nodeElement.id = `node-${nodeData.id}`;
                 nodeElement.style.left = `${nodeData.x}px`;
                 nodeElement.style.top = `${nodeData.y}px`;
+
+                if (nodeData.isRoot) {
+                    nodeElement.style.backgroundColor = style.rootBgColor;
+                    nodeElement.style.color = style.rootTextColor;
+                    nodeElement.style.borderColor = style.rootBorderColor;
+                } else {
+                    nodeElement.style.backgroundColor = style.nodeBgColor;
+                    nodeElement.style.color = style.nodeTextColor;
+                    nodeElement.style.borderColor = borderColor;
+                }
+                nodeElement.style.boxShadow = style.nodeShadow;
 
                 nodeElement.innerHTML = `
                     <div class="node-actions">
@@ -426,12 +1063,14 @@
                 `;
 
                 const addChildBtn = nodeElement.querySelector('.add-child-btn');
+                addChildBtn.style.backgroundColor = style.addChildBtnColor;
                 addChildBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.addChildNode(nodeData);
                 });
 
                 const deleteBtn = nodeElement.querySelector('.delete-btn');
+                deleteBtn.style.backgroundColor = style.deleteBtnColor;
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.deleteNode(nodeData);
@@ -459,15 +1098,29 @@
             }
 
             selectNode(nodeData, nodeElement) {
+                const style = this.styleManager.getCurrentStyle();
                 this.deselectAllNodes();
                 this.selectedNode = nodeData;
                 nodeElement.classList.add('selected');
+                nodeElement.style.borderColor = style.selectedBorderColor;
+                nodeElement.style.boxShadow = style.selectedShadow;
             }
 
             deselectAllNodes() {
+                const style = this.styleManager.getCurrentStyle();
                 this.selectedNode = null;
                 document.querySelectorAll('.node.selected').forEach(node => {
                     node.classList.remove('selected');
+                    const nodeId = parseInt(node.id.replace('node-', ''));
+                    const nodeData = this.nodes.find(n => n.id === nodeId);
+                    if (nodeData) {
+                        if (nodeData.isRoot) {
+                            node.style.borderColor = style.rootBorderColor;
+                        } else {
+                            node.style.borderColor = this.styleManager.getChildNodeColor(nodeData.styleIndex);
+                        }
+                        node.style.boxShadow = style.nodeShadow;
+                    }
                 });
             }
 
@@ -518,19 +1171,20 @@
             }
 
             updateConnections() {
+                const style = this.styleManager.getCurrentStyle();
                 this.connections.innerHTML = '';
 
                 this.nodes.forEach(node => {
                     if (!node.isRoot && node.parentId) {
                         const parentNode = this.nodes.find(n => n.id === node.parentId);
                         if (parentNode) {
-                            this.drawConnection(parentNode, node);
+                            this.drawConnection(parentNode, node, style.connectionColor);
                         }
                     }
                 });
             }
 
-            drawConnection(fromNode, toNode) {
+            drawConnection(fromNode, toNode, color) {
                 const fromElement = document.getElementById(`node-${fromNode.id}`);
                 const toElement = document.getElementById(`node-${toNode.id}`);
 
@@ -547,19 +1201,80 @@
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
-                const midX = (fromX + toX) / 2;
                 const controlPoint1X = fromX + (toX - fromX) * 0.3;
                 const controlPoint2X = fromX + (toX - fromX) * 0.7;
                 
                 const d = `M ${fromX} ${fromY} C ${controlPoint1X} ${fromY}, ${controlPoint2X} ${toY}, ${toX} ${toY}`;
                 
                 path.setAttribute('d', d);
-                path.setAttribute('stroke', '#3498db');
+                path.setAttribute('stroke', color);
                 path.setAttribute('stroke-width', '2');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke-linecap', 'round');
 
                 this.connections.appendChild(path);
+            }
+
+            reapplyStyles() {
+                const style = this.styleManager.getCurrentStyle();
+                
+                this.nodes.forEach(nodeData => {
+                    const nodeElement = document.getElementById(`node-${nodeData.id}`);
+                    if (!nodeElement) return;
+
+                    let borderColor;
+                    if (nodeData.isRoot) {
+                        nodeElement.style.backgroundColor = style.rootBgColor;
+                        nodeElement.style.color = style.rootTextColor;
+                        borderColor = style.rootBorderColor;
+                    } else {
+                        nodeElement.style.backgroundColor = style.nodeBgColor;
+                        nodeElement.style.color = style.nodeTextColor;
+                        borderColor = this.styleManager.getChildNodeColor(nodeData.styleIndex);
+                    }
+
+                    if (nodeElement.classList.contains('selected')) {
+                        nodeElement.style.borderColor = style.selectedBorderColor;
+                        nodeElement.style.boxShadow = style.selectedShadow;
+                    } else {
+                        nodeElement.style.borderColor = borderColor;
+                        nodeElement.style.boxShadow = style.nodeShadow;
+                    }
+
+                    const addChildBtn = nodeElement.querySelector('.add-child-btn');
+                    if (addChildBtn) {
+                        addChildBtn.style.backgroundColor = style.addChildBtnColor;
+                    }
+
+                    const deleteBtn = nodeElement.querySelector('.delete-btn');
+                    if (deleteBtn) {
+                        deleteBtn.style.backgroundColor = style.deleteBtnColor;
+                    }
+                });
+
+                this.updateConnections();
+            }
+
+            relayoutAllNodes() {
+                if (this.nodes.length === 0) return;
+
+                const rootNode = this.nodes.find(n => n.isRoot);
+                if (!rootNode) return;
+
+                this.layoutCalculator.recalculateAllPositions(
+                    this.nodes,
+                    this.styleManager.currentLayout
+                );
+
+                this.nodes.forEach(nodeData => {
+                    const nodeElement = document.getElementById(`node-${nodeData.id}`);
+                    if (nodeElement) {
+                        nodeElement.style.left = `${nodeData.x}px`;
+                        nodeElement.style.top = `${nodeData.y}px`;
+                    }
+                });
+
+                this.updateConnections();
             }
 
             clearCanvas() {
