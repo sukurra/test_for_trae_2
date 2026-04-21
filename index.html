@@ -1190,14 +1190,15 @@
 
                 if (!fromElement || !toElement) return;
 
-                const fromRect = fromElement.getBoundingClientRect();
-                const toRect = toElement.getBoundingClientRect();
-                const canvasRect = this.canvas.getBoundingClientRect();
+                const fromWidth = fromElement.offsetWidth || 120;
+                const fromHeight = fromElement.offsetHeight || 40;
+                const toWidth = toElement.offsetWidth || 120;
+                const toHeight = toElement.offsetHeight || 40;
 
-                const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left + this.canvas.scrollLeft;
-                const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top + this.canvas.scrollTop;
-                const toX = toRect.left + toRect.width / 2 - canvasRect.left + this.canvas.scrollLeft;
-                const toY = toRect.top + toRect.height / 2 - canvasRect.top + this.canvas.scrollTop;
+                const fromX = fromNode.x + fromWidth / 2;
+                const fromY = fromNode.y + fromHeight / 2;
+                const toX = toNode.x + toWidth / 2;
+                const toY = toNode.y + toHeight / 2;
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
